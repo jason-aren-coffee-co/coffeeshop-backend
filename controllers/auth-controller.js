@@ -21,11 +21,15 @@ exports.login = async(req,res) => {
     const token = jwt.sign({username}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN});
     console.log("TOKEN : " + token);
     res.header('auth-token', token); //Put token in header
-    // const cookieOptions = {
-    //     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
-    //     httpOnly: true
-    // }
-    // res.cookie('jwt', token, cookieOptions);
+    // res.setHeader('Access-Control-Allow-Headers', 'auth-token');
+
+    res.setHeader("Access-Control-Expose-Headers", "auth-token");
+    // console.log(req.headers['auth-token'])
+    const cookieOptions = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+        httpOnly: true
+    }
+    res.cookie('jwt', token, cookieOptions);
 
     res.send({"success":true, "token":token});
 }

@@ -12,7 +12,7 @@ const loginVerify = async(req, res, next) => {
     const {password} = req.body;
     const validation = schema.validate(req.body);
     if(validation.error){
-        return res.status(400).send("Input is not valid");
+        return res.status(400).send({"success":false, "message":"Input is not valid"});
     }
     const db = dbService.getDbServiceInstance();
     const response = await db.verifyCredentials(req.body);
@@ -23,7 +23,7 @@ const loginVerify = async(req, res, next) => {
         }
     }
     else{
-        return res.status(401).send("Incorrect Credentials");
+        return res.status(401).send({"success":false, "message":"Incorrect Credentials"});
     }
 }
 

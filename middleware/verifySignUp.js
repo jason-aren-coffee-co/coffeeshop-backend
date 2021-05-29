@@ -13,14 +13,14 @@ const schema = Joi.object({
 const checkSignUpEntries = async(req, res, next) => {
     const validation = schema.validate(req.body);
     if(validation.error){
-        return res.status(400).send("Entry is not valid");
+        return res.status(400).send({"success":false, "message":"Entry is not valid"});
     }
     const db = dbService.getDbServiceInstance();
 
     const response = await db.verifyCredentials(req.body);
     console.log(response);
     if(response[0]){
-        return res.status(409).send("Username allready in use");
+        return res.status(409).send({"success":false, "message": "Username allready in use"});
     }
     
     next();
