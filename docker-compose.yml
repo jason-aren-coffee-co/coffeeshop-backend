@@ -1,0 +1,46 @@
+version: "3.2"
+services:
+    coffee-shop-db:
+        image: mysql:5.7
+        command: --default-authentication-plugin=mysql_native_password
+        ports:
+            - "3305:3306"
+        restart: always
+        environment:
+            - MYSQL_DATABASE=coffee_shop_db
+            - MYSQL_ROOT_PASSWORD=password
+        container_name: coffee-shop-db
+        expose:
+            - 3305
+        networks:
+            - coffee-shop-app
+    coffee-shop-frontend:
+        image: coffee-shop-frontend
+        stdin_open: true
+        ports:
+            - "3000:3000"
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+        networks:
+            - coffee-shop-app
+    coffee-shop-backend:
+        image: coffee-shop-backend
+        ports:
+            - "5000:5000"
+        depends_on: 
+            - coffee-shop-db
+        environment:
+            - PORT=5000
+            - HOST=coffee-shop-db
+            - USER=root
+            - PASSWORD=password
+            - DB_PORT=3306
+            - DB_NAME=coffee_shop_db
+            - JWT_SECRET=thisissupposedtobeascret
+            - JWT_EXPIRES_IN=90d
+            - JWT_COOKIE_EXPIRES=90
+        networks:
+            - coffee-shop-app
+networks:
+    coffee-shop-app:
+        driver: bridge
